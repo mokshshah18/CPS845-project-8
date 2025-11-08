@@ -1,0 +1,77 @@
+# === Python / Flask ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+.env
+venv/
+env/
+.venv/
+ENV/
+instance/
+*.sqlite3
+*.db
+.DS_Store
+
+# Logs
+*.log
+*.out
+*.err
+logs/
+*.pid
+
+# Coverage / testing
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+*.hypothesis/
+.pytest_cache/
+.pyre/
+
+# Flask / app configs
+config.py
+instance/config.py
+
+# === Node / React (TypeScript) frontend ===
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# === VSCode / IDEs ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === System ===
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# === Misc ===
+# Ignore generated static files if Flask builds them
+app/static/generated/
+app/static/js/bundle.js
+app/static/css/main.css
+
+# === SQL / secrets ===
+*.bak
+*.mdf
+*.ldf
+*.sql
+*.dsn

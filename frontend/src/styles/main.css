@@ -1,0 +1,26 @@
+body {
+  font-family: sans-serif;
+  background: #fafafa;
+  color: #333;
+}
+
+.container {
+  padding: 1rem;
+  max-width: 800px;
+  margin: auto;
+}
+
+.selector {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.route-display {
+  margin-bottom: 1rem;
+}
