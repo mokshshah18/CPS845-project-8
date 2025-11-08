@@ -17,3 +17,9 @@ cd backend
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
+
+### For frontend:
+cd frontend
+npm install
+npm run dev
