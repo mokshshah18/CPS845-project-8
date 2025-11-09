@@ -3,7 +3,6 @@ html, body, #root {
   padding: 0;
   height: 100%;
   width: 100%;
-  font-family: Arial, sans-serif;
   background-color: rgb(45, 100, 228);
 }
 
@@ -15,33 +14,34 @@ html, body, #root {
 }
 
 .controls {
-  padding: 10px 20px;
-  background-color:  rgb(45, 100, 228); 
+  padding: 6px 14px;
+  background-color: rgb(45, 100, 228);
   border-bottom: 1px whitesmoke;
   color: white;
 }
 
 .controls h1 {
-  margin: 10px 0;
-  color: white; 
+  margin: 6px 0;
+  color: white;
+  font-size: 20px;
 }
 
 .inputs {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 10px 0;
+  gap: 8px;
+  margin: 6px 0;
 }
 
 .inputs input {
-  flex: 1 1 150px;
-  padding: 8px;
+  flex: 1 1 140px;
+  padding: 6px;
   border-radius: 4px;
   border: 1px solid whitesmoke;
 }
 
 button {
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -49,12 +49,12 @@ button {
 
 .gps-buttons {
   display: flex;
-  gap: 10px;
-  margin: 10px 0;
+  gap: 8px;
+  margin: 6px 0;
 }
 
-button.gps, button.navigate {
-  background-color: rgb(255, 217, 0); 
+button.gps, button.navigate, button.swap, .top-btn, .debug-btn {
+  background-color: rgb(255, 217, 0);
   color: black;
 }
 
@@ -69,7 +69,7 @@ ul li {
 }
 
 ul li:hover {
-  color: #fffb00; 
+  color: #fffb00;
 }
 
 .scanner video {
@@ -82,11 +82,52 @@ ul li:hover {
 }
 
 button.swap {
-  background-color: rgb(255, 217, 0); 
-  color: black;
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
   font-size: 18px;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 14px;
+  background-color: rgb(45, 100, 228);
+  color: white;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+.right-controls {
+  display: flex;
+  gap: 6px;
+  position: relative;
+}
+
+.incident-dropdown {
+  position: relative;
+}
+
+.incident-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid whitesmoke;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  z-index: 10;
+}
+
+.incident-menu button {
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.incident-menu button:hover {
+  background-color: white;
 }

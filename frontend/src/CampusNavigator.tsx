@@ -17,6 +17,7 @@ const CampusNavigator: React.FC = () => {
     const [recent, setrecent] = useState<string[]>([]);
     const [scanning, setscanning] = useState(false);
     const [showDebug, setShowDebug] = useState(false);
+    const [showIncidentMenu, setShowIncidentMenu] = useState(false);
 
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const codeReaderRef = useRef<BrowserMultiFormatReader | null>(null);
@@ -87,25 +88,44 @@ const CampusNavigator: React.FC = () => {
     return (
         <div className="full-container">
             {showDebug && <UserDbDebug onClose={() => setShowDebug(false)} />}
-            <div className="controls">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <h1>Campus Navigator</h1>
-                    <button
-                        onClick={() => setShowDebug(true)}
-                        style={{
-                            padding: "6px 12px",
-                            fontSize: "12px",
-                            backgroundColor: "#6c757d",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                        }}
-                        title="Open User DB Debug Panel"
-                    >
-                        Debug DB
-                    </button>
+
+            <div className="top-bar">
+                <div className="left-controls">
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <h1>Campus Navigator</h1>
+                        <button
+                            onClick={() => setShowDebug(true)}
+                            className="debug-btn"
+                            title="Open User DB Debug Panel"
+                        >
+                            Debug DB
+                        </button>
+                    </div>
                 </div>
+
+                <div className="right-controls">
+                    <button className="top-btn">Saved Searches</button>
+                    <button className="top-btn">Heatmap</button>
+                    <button className="top-btn">View Notifications</button>
+                    <button className="top-btn">Sync Schedule</button>
+
+                    <div
+                        className="incident-dropdown"
+                        onMouseEnter={() => setShowIncidentMenu(true)}
+                        onMouseLeave={() => setShowIncidentMenu(false)}
+                    >
+                        <button className="top-btn">Report Incidents ▾</button>
+                        {showIncidentMenu && (
+                            <div className="incident-menu">
+                                <button>Report Incidents (Students)</button>
+                                <button>Report Incidents (Faculty)</button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div className="controls">
                 <div className="gps-buttons">
                     <button className="gps" onClick={gpshandle}>
                         Use my Current Location
@@ -177,11 +197,7 @@ const CampusNavigator: React.FC = () => {
                         options={{
                             zoomControl: true,
                             scrollwheel: true,
-                            disableDoubleClickZoom: false,
                             draggable: true,
-                            mapTypeControl: false,
-                            streetViewControl: false,
-                            fullscreenControl: false,
                         }}
                     >
                         {currloc && <Marker position={currloc} />}
