@@ -5,3 +5,4 @@ you might need to run:
 npm install
 npm install @react-google-maps/api
 npm install @zxing/browser
+npm run dev
