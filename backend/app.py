@@ -6,6 +6,7 @@ from config import SQLALCHEMY_DATABASE_URI, SQLALCHEMY_TRACK_MODIFICATIONS
 from db import db
 from routes.directions import directions_bp
 from routes.locations import locations_bp
+from routes.saved_items import saved_items_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -19,6 +20,7 @@ migrate = Migrate(app, db)
 app.register_blueprint(directions_bp, url_prefix="/api/route")
 app.register_blueprint(locations_bp, url_prefix="/api/locations")
 app.register_blueprint(maps_bp, url_prefix="/api/maps")
+app.register_blueprint(saved_items_bp, url_prefix="/api/saved-items")
 
 
 @app.route("/")
