@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models import Location, Path
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 directions_bp = Blueprint("directions", __name__)
 
@@ -20,8 +20,8 @@ def compute_route():
     # Basic placeholder route
     path = Path.query.filter(
         or_(
-            (Path.start_id == start.id) & (Path.end_id == end.id),
-            (Path.start_id == end.id) & (Path.end_id == start.id),
+            and_(Path.start_id == start.id, Path.end_id == end.id),
+            and_(Path.start_id == end.id, Path.end_id == start.id),
         )
     ).first()
 
