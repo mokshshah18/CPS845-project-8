@@ -1,0 +1,92 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  font-family: Arial, sans-serif;
+  background-color: rgb(45, 100, 228);
+}
+
+.full-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+.controls {
+  padding: 10px 20px;
+  background-color:  rgb(45, 100, 228); 
+  border-bottom: 1px whitesmoke;
+  color: white;
+}
+
+.controls h1 {
+  margin: 10px 0;
+  color: white; 
+}
+
+.inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.inputs input {
+  flex: 1 1 150px;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid whitesmoke;
+}
+
+button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.gps-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+button.gps, button.navigate {
+  background-color: rgb(255, 217, 0); 
+  color: black;
+}
+
+ul {
+  list-style: disc inside;
+  padding-left: 0;
+}
+
+ul li {
+  cursor: pointer;
+  padding: 2px 0;
+}
+
+ul li:hover {
+  color: #fffb00; 
+}
+
+.scanner video {
+  width: 100%;
+  border-radius: 4px;
+}
+
+.map-wrapper {
+  flex: 1 1 auto;
+}
+
+button.swap {
+  background-color: rgb(255, 217, 0); 
+  color: black;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
