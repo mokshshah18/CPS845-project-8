@@ -78,3 +78,58 @@ class SavedRoute(db.Model):
     # Relationships
     start_location = db.relationship("Location", foreign_keys=[start_location_id])
     end_location = db.relationship("Location", foreign_keys=[end_location_id])
+
+class UserSavedLocations(db.Model):
+    __tablename__ = "user_saved_locations"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    location_name = db.Column(db.String(200), nullable=False)
+    building_name = db.Column(db.String(100))
+    room_number = db.Column(db.String(50))
+    floor_number = db.Column(db.Integer)
+    qr_code_id = db.Column(db.String(100))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationship
+    user = db.relationship("User", backref="saved_locations")
+
+class UserRecentSearches(db.Model):
+    __tablename__ = "user_recent_searches"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    search_term = db.Column(db.String(255), nullable=False)
+    resolved_location_id = db.Column(db.Integer, db.ForeignKey("locations.id"))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationships
+    user = db.relationship("User", backref="recent_searches")
+    location = db.relationship("Location", backref="recent_searches")
+
+class UserScheduleEntries(db.Model):
+    __tablename__ = "user_schedule_entries"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    course_name = db.Column(db.String(200))
+    professor_name = db.Column(db.String(100))
+    building_name = db.Column(db.String(100))
+    room_number = db.Column(db.String(50))
+    event_start_time = db.Column(db.DateTime, nullable=False)
+    event_end_time = db.Column(db.DateTime, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    # Relationship
+    user = db.relationship("User", backref="schedule_entries")
+
+class UserPreferences(db.Model):
+    __tablename__ = "user_preferences"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, unique=True)
+    sorting_preference = db.Column(db.String(50), default="name")
+    route_preference = db.Column(db.String(50), default="shortest")  # shortest, fastest, accessible
+    calendar_sync_enabled = db.Column(db.Boolean, default=False)
+    offline_mode_enabled = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationship
+    user = db.relationship("User", backref="preferences", uselist=False)

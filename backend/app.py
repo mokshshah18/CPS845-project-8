@@ -7,6 +7,7 @@ from db import db
 from routes.directions import directions_bp
 from routes.locations import locations_bp
 from routes.saved_items import saved_items_bp
+from routes.user_db import user_db_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -21,6 +22,7 @@ app.register_blueprint(directions_bp, url_prefix="/api/route")
 app.register_blueprint(locations_bp, url_prefix="/api/locations")
 app.register_blueprint(maps_bp, url_prefix="/api/maps")
 app.register_blueprint(saved_items_bp, url_prefix="/api/saved-items")
+app.register_blueprint(user_db_bp, url_prefix="/api/user")
 
 
 @app.route("/")

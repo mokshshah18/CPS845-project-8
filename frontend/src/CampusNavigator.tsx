@@ -6,6 +6,7 @@ import {
     DirectionsRenderer,
 } from "@react-google-maps/api";
 import { BrowserMultiFormatReader } from "@zxing/browser";
+import UserDbDebug from "./components/UserDbDebug";
 import "./CampusNavigator.css";
 
 const CampusNavigator: React.FC = () => {
@@ -15,6 +16,7 @@ const CampusNavigator: React.FC = () => {
     const [dirs, setdirs] = useState<google.maps.DirectionsResult | null>(null);
     const [recent, setrecent] = useState<string[]>([]);
     const [scanning, setscanning] = useState(false);
+    const [showDebug, setShowDebug] = useState(false);
 
     const videoRef = useRef<HTMLVideoElement | null>(null);
     const codeReaderRef = useRef<BrowserMultiFormatReader | null>(null);
@@ -84,8 +86,26 @@ const CampusNavigator: React.FC = () => {
 
     return (
         <div className="full-container">
+            {showDebug && <UserDbDebug onClose={() => setShowDebug(false)} />}
             <div className="controls">
-                <h1>Campus Navigator</h1>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <h1>Campus Navigator</h1>
+                    <button
+                        onClick={() => setShowDebug(true)}
+                        style={{
+                            padding: "6px 12px",
+                            fontSize: "12px",
+                            backgroundColor: "#6c757d",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                        }}
+                        title="Open User DB Debug Panel"
+                    >
+                        Debug DB
+                    </button>
+                </div>
                 <div className="gps-buttons">
                     <button className="gps" onClick={gpshandle}>
                         Use my Current Location
