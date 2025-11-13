@@ -1,0 +1,361 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Faculty – Send Notifications</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --blue: #2f6df6;
+        --bg: #f7f7fb;
+        --card: #fff;
+        --text: #111;
+        --muted: #666;
+      }
+
+      html, body {
+        margin: 0;
+        height: 100%;
+      }
+
+      body {
+        font-family: sans-serif;
+        background: #007bff;
+        padding: 24px;
+      }
+
+      .wrap {
+        max-width: 960px;
+        margin: 0 auto;
+        background: var(--card);
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        padding: 22px;
+      }
+
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      h1 {
+        font-size: 22px;
+        margin: 0;
+        color: var(--text);
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      @media (max-width: 720px) {
+        .row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        margin: 10px 0 6px;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #d7d7e0;
+        border-radius: 10px;
+        font-size: 14px;
+        box-sizing: border-box;
+        background: #fff;
+      }
+
+      textarea {
+        min-height: 96px;
+        resize: vertical;
+      }
+
+      .btn {
+        background: var(--blue);
+        color: #fff;
+        border: 0;
+        padding: 10px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .btn.ghost {
+        background: #edf2ff;
+        color: #1d4ed8;
+      }
+
+      .btn.danger {
+        background: #e11d48;
+      }
+
+      .bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin: 8px 0 14px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        padding: 10px 8px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+        font-size: 14px;
+      }
+
+      th {
+        background: #fafbff;
+        color: #333;
+        font-weight: 700;
+      }
+
+      #msg {
+        margin-top: 8px;
+        font-weight: 600;
+      }
+
+      .ok {
+        color: #0a7f3f;
+      }
+
+      .err {
+        color: #b00020;
+      }
+
+      #deliveryPanel {
+        display: none;
+        margin-top: 8px;
+        padding: 12px;
+        border: 1px solid #e6e8f0;
+        border-radius: 10px;
+        background: #fafbff;
+      }
+
+      #deliveryBody {
+        font-size: 14px;
+      }
+
+      .pill {
+        background: #eef3ff;
+        color: #1d4ed8;
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Require login -->
+    <script>
+      if (localStorage.getItem("facultyLoggedIn") !== "true") {
+        alert("Please log in first.");
+        window.location.href = "faculty-login.html";
+      }
+    </script>
+
+    <div class="wrap">
+      <div class="top">
+        <h1>Faculty – Send Notifications</h1>
+        <div class="bar">
+          <button class="btn ghost" onclick="location.href='/'">Back to App</button>
+          <button class="btn danger" onclick="localStorage.removeItem('facultyLoggedIn');location.href='faculty-login.html'">Log Out</button>
+        </div>
+      </div>
+
+      <p style="color:#444;margin:6px 0 14px">
+        Select a student-submitted incident and send a notification to all students
+        enrolled in a specific semester (e.g., Fall 2024 or Winter 2025).
+      </p>
+
+      <!-- Student reports -->
+      <div class="bar">
+        <button id="loadReports" class="btn">Load Student Reports</button>
+        <span id="queueNote" style="color:#666"></span>
+      </div>
+      <table id="reportsTbl">
+        <thead>
+          <tr>
+            <th>ID</th><th>When</th><th>Category</th><th>Title</th><th>Location</th><th></th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <!-- Promote report to alert -->
+      <div class="bar" style="margin-top:18px">
+        <span class="pill">Send Notification</span>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Report ID</label>
+          <input id="report_id" placeholder="Click a report’s Use button to autofill" />
+        </div>
+        <div>
+          <label>Severity</label>
+          <select id="severity">
+            <option value="info">Info</option>
+            <option value="advisory">Advisory</option>
+            <option value="urgent">Urgent</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <div>
+          <label>Semester</label>
+          <select id="semester">
+            <option value="">Select Semester</option>
+            <option value="Fall 2024">Fall 2024</option>
+            <option value="Winter 2025">Winter 2025</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label>Notification Title</label>
+        <input id="title" placeholder="Short headline (optional – defaults to report title)" />
+      </div>
+      <div>
+        <label>Notification Message</label>
+        <textarea id="message" placeholder="Details for the students being notified."></textarea>
+      </div>
+
+      <div class="bar">
+        <button id="promote" class="btn">Send Notification</button>
+        <button id="viewDelivery" class="btn ghost">View Delivery</button>
+        <span id="msg"></span>
+      </div>
+
+      <!-- Delivery results -->
+      <div id="deliveryPanel">
+        <b>Recipients</b>
+        <div id="deliveryBody" style="margin-top:6px;"></div>
+      </div>
+    </div>
+
+    <script>
+      const API = "http://127.0.0.1:5000";
+      let lastAlertId = null;
+
+      // Load student reports
+      async function loadReports() {
+        const res = await fetch(`${API}/api/report-incidents`);
+        const data = await res.json();
+        const tb = document.querySelector("#reportsTbl tbody");
+        tb.innerHTML = "";
+        (data || []).forEach(r => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${r.id}</td>
+            <td>${new Date(r.created_at).toLocaleString()}</td>
+            <td>${r.category}</td>
+            <td>${r.title || ""}</td>
+            <td>${(r.building_name||"") + (r.room_number?(" • "+r.room_number):"")}</td>
+            <td><button class="btn ghost useBtn" data-id="${r.id}" data-title="${(r.title||"").replace(/"/g,'&quot;')}">Use</button></td>
+          `;
+          tb.appendChild(tr);
+        });
+        document.getElementById("queueNote").textContent = `${(data||[]).length} report(s) loaded`;
+      }
+
+      // Autofill report info
+      document.querySelector("#reportsTbl tbody").addEventListener("click", (e) => {
+        const b = e.target.closest(".useBtn");
+        if (!b) return;
+        document.getElementById("report_id").value = b.dataset.id;
+        if (b.dataset.title) document.getElementById("title").value = b.dataset.title;
+        window.scrollTo({ top: document.getElementById("report_id").offsetTop - 50, behavior: "smooth" });
+      });
+
+      // Send alert (semester-based)
+      async function promoteFromReport() {
+        const msg = document.getElementById("msg");
+        msg.className = ""; msg.textContent = "";
+
+        const rid = Number(document.getElementById("report_id").value);
+        const semester = document.getElementById("semester").value;
+
+        if (!rid) { msg.className = "err"; msg.textContent = "Please enter a report ID."; return; }
+        if (!semester) { msg.className = "err"; msg.textContent = "Please select a semester."; return; }
+
+        const payload = {
+          created_by: "faculty@school.edu",
+          severity: document.getElementById("severity").value,
+          audience_type: "semester",
+          semester: semester,
+          title: document.getElementById("title").value || null,
+          message: document.getElementById("message").value || null
+        };
+
+        const res = await fetch(`${API}/api/alerts/from-report/${rid}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        let js = {};
+        try { js = await res.json(); } catch (_) {}
+
+        if (res.ok) {
+          lastAlertId = js.alert_id;
+          msg.className = "ok";
+          msg.textContent = `Notification sent (Alert #${js.alert_id}, recipients: ${js.recipient_count}).`;
+          await loadReports(); 
+          document.getElementById("deliveryPanel").style.display = "none";
+        } else {
+          msg.className = "err";
+          msg.textContent = js.error || "Failed to send.";
+        }
+      }
+
+      // View recipients
+      async function viewDelivery() {
+        if (!lastAlertId) return alert("Send a notification first.");
+        const res = await fetch(`${API}/api/alerts/${lastAlertId}/recipients`);
+        const list = await res.json();
+        const body = document.getElementById("deliveryBody");
+        if (!Array.isArray(list) || list.length === 0) {
+          body.innerHTML = "No recipients recorded.";
+        } else {
+          body.innerHTML = `
+            <div><b>Total:</b> ${list.length}</div>
+            <ul style="margin:6px 0; padding-left:16px;">
+              ${list.map(r => `<li>${r.email} — ${r.delivered ? "delivered" : "pending"}</li>`).join("")}
+            </ul>`;
+        }
+        document.getElementById("deliveryPanel").style.display = "block";
+        document.getElementById("deliveryPanel").scrollIntoView({ behavior: "smooth" });
+      }
+
+      document.getElementById("loadReports").addEventListener("click", loadReports);
+      document.getElementById("promote").addEventListener("click", promoteFromReport);
+      document.getElementById("viewDelivery").addEventListener("click", viewDelivery);
+
+      loadReports();
+    </script>
+  </body>
+</html>

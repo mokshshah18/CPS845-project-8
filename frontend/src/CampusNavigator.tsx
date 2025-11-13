@@ -116,10 +116,14 @@ const CampusNavigator: React.FC = () => {
                     >
                         <button className="top-btn">Report Incidents ▾</button>
                         {showIncidentMenu && (
-                            <div className="incident-menu">
-                                <button>Report Incidents (Students)</button>
-                                <button>Report Incidents (Faculty)</button>
-                            </div>
+                        <div className="incident-menu">
+                            <button onClick={() => (window.location.href = "/report-student.html")}>
+                            Report Incident (Student)
+                            </button>
+                            <button onClick={() => (window.location.href = "/faculty-login.html")}>
+                            Send Alert (Faculty)
+                            </button>
+                        </div>
                         )}
                     </div>
                 </div>

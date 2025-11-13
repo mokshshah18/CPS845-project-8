@@ -1,5 +1,6 @@
 from db import db
 from datetime import datetime
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class Location(db.Model):
     __tablename__ = "locations"
@@ -133,3 +134,60 @@ class UserPreferences(db.Model):
     
     # Relationship
     user = db.relationship("User", backref="preferences", uselist=False)
+
+class StudentIncidentReport(db.Model):
+    __tablename__ = "student_incident_reports"
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    reporter_name = db.Column(db.String(120), nullable=False)
+    reporter_email = db.Column(db.String(200), nullable=False)
+    reporter_phone = db.Column(db.String(50))
+    category = db.Column(db.String(50), nullable=False) 
+    title = db.Column(db.String(140), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    building_name = db.Column(db.String(120))
+    room_number = db.Column(db.String(50))
+    lat = db.Column(db.Float)
+    lng = db.Column(db.Float)
+    photo_url = db.Column(db.String(500))
+    status = db.Column(db.String(20), default="new")   
+
+class FacultyUser(db.Model):
+    __tablename__ = "faculty_users"
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)   
+
+class Alert(db.Model):
+    __tablename__ = "alerts"
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    created_by = db.Column(db.String(200))
+    severity = db.Column(db.String(20))          
+    audience_type = db.Column(db.String(20))     
+    course_code = db.Column(db.String(20))
+    lat = db.Column(db.Float)
+    lng = db.Column(db.Float)
+    title = db.Column(db.String(200))
+    message = db.Column(db.Text)
+    source_report_id = db.Column(db.Integer, db.ForeignKey("student_incident_reports.id"))
+
+    recipients = db.relationship("AlertRecipient", backref="alert", cascade="all, delete-orphan")
+
+class AlertRecipient(db.Model):
+    __tablename__ = "alert_recipients"
+    id = db.Column(db.Integer, primary_key=True)
+    alert_id = db.Column(db.Integer, db.ForeignKey("alerts.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    user_email = db.Column(db.String(255))
+    delivered = db.Column(db.Boolean, default=True)  
+    delivered_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship("User")
+

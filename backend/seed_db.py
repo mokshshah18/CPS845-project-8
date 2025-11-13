@@ -1,6 +1,8 @@
 from app import app, db
-from models import Location, Path, User, SavedItem
+from models import Location, Path, User, SavedItem, FacultyUser
+from werkzeug.security import generate_password_hash
 import json
+from datetime import datetime
 
 with app.app_context():
     db.drop_all()
@@ -23,15 +25,22 @@ with app.app_context():
     db.session.add_all(paths)
     db.session.commit()
 
-    # Create a test user
-    test_user = User(email="test@ryerson.ca", name="Test User")
-    db.session.add(test_user)
+    # 3 Test Users
+    # U1: in CPS845 + CPS803 
+    u1 = User(email="joe@ryerson.ca", name="Joe")
+
+    # U2: in CPS845 only 
+    u2 = User(email="alex@ryerson.ca", name="Alex")
+
+    # U3: in CPS847 only 
+    u3 = User(email="maria@ryerson.ca", name="Maria")
+
+    db.session.add_all([u1, u2, u3])
     db.session.commit()
 
-    # Create sample saved items for testing sorting
     saved_items = [
         SavedItem(
-            user_id=test_user.id,
+            user_id=u1.id,
             item_type="course",
             name="Advanced Database Systems",
             professor_name="Dr. Smith",
@@ -42,7 +51,7 @@ with app.app_context():
             item_metadata=json.dumps({"semester": "Fall 2024", "credits": 3})
         ),
         SavedItem(
-            user_id=test_user.id,
+            user_id=u1.id,
             item_type="course",
             name="Machine Learning",
             professor_name="Dr. Johnson",
@@ -52,8 +61,21 @@ with app.app_context():
             tags="ai,graduate",
             item_metadata=json.dumps({"semester": "Fall 2024", "credits": 3})
         ),
+
         SavedItem(
-            user_id=test_user.id,
+            user_id=u2.id,
+            item_type="course",
+            name="Advanced Database Systems",
+            professor_name="Dr. Smith",
+            course_code="CPS845",
+            location_id=locs[0].id,
+            room_number="LIB-301",
+            tags="database,graduate",
+            item_metadata=json.dumps({"semester": "Fall 2024", "credits": 3})
+        ),
+
+        SavedItem(
+            user_id=u3.id,
             item_type="course",
             name="Software Engineering",
             professor_name="Dr. Williams",
@@ -63,8 +85,9 @@ with app.app_context():
             tags="software,graduate",
             item_metadata=json.dumps({"semester": "Winter 2025", "credits": 3})
         ),
+
         SavedItem(
-            user_id=test_user.id,
+            user_id=u1.id,
             item_type="location",
             name="Library Study Room",
             location_id=locs[0].id,
@@ -72,7 +95,7 @@ with app.app_context():
             tags="study,quiet",
         ),
         SavedItem(
-            user_id=test_user.id,
+            user_id=u1.id,
             item_type="location",
             name="Engineering Lab",
             location_id=locs[3].id,
@@ -83,6 +106,19 @@ with app.app_context():
     db.session.add_all(saved_items)
     db.session.commit()
 
+    # Faculty account 
+    existing = FacultyUser.query.filter_by(username="admin").first()
+    if not existing:
+        admin = FacultyUser(
+            username="admin",
+            password_hash=generate_password_hash("secure123")
+        )
+        db.session.add(admin)
+        db.session.commit()
+        print("Default faculty account created: username='admin', password='secure123'")
+    else:
+        print("Faculty admin already exists.")
+
     print("Database seeded!")
-    print(f"Created {len(locs)} locations, {len(paths)} paths, 1 user, and {len(saved_items)} saved items")
-    print(f"Test user ID: {test_user.id} (use this for testing saved items API)")
+    print(f"Created {len(locs)} locations, {len(paths)} paths, 3 users, and {len(saved_items)} saved items")
+    print(f"User IDs: {[u1.id, u2.id, u3.id]}")
