@@ -20,6 +20,8 @@ pip install -r requirements.txt
 ```
 
 ### For frontend:
+```
 cd frontend
 npm install
 npm run dev
+```
