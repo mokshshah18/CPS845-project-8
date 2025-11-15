@@ -154,3 +154,23 @@ export async function updatePreferences(
   const res = await API.put("/user/preferences", preferences);
   return res.data;
 }
+
+// ============ Incident Reports ============
+
+export interface Incident {
+  id: number;
+  category: string;
+  title: string;
+  building_name?: string;
+  room_number?: string;
+  lat: number | null;
+  lng: number | null;
+  description?: string;
+  created_at?: string;
+}
+
+export async function getIncidents(): Promise<Incident[]> {
+  const res = await API.get("/report-incidents/");
+  return res.data;
+}
+
