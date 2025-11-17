@@ -58,7 +58,7 @@ function computeRouteIncidentScore(
             0
         ) ?? 0;
 
-    const penaltySeconds = incidentsNearRoute * 15 * 60; 
+    const penaltySeconds = incidentsNearRoute * 15 * 60;
     const score = totalDurationSec + penaltySeconds;
 
     return {
@@ -135,6 +135,11 @@ const CampusNavigator: React.FC = () => {
         { lat: 43.65717150908827, lng: -79.38029684291963, weight: 150 },
         { lat: 43.656655707080596, lng: -79.38142862996358, weight: 70 },
         { lat: 43.65574926681535, lng: -79.38288121741424, weight: 30 },
+        { lat: 43.65747159262251, lng: -79.37788012398131, weight: 20 },
+        { lat: 43.65776858904759, lng: -79.3768396597962, weight: 20 },
+        { lat: 43.65882834965845, lng: -79.37568976934674, weight: 20 },
+        { lat: 43.66007235670207, lng: -79.37661950924006, weight: 20 },
+        { lat: 43.66212622714157, lng: -79.38028424023523, weight: 100 },
     ];
 
     // HEATMAP TOGGLE EFFECT
@@ -252,7 +257,7 @@ const CampusNavigator: React.FC = () => {
                     travelMode: google.maps.TravelMode.WALKING,
                 });
                 setdirs(result);
-                setRouteInfo(null); 
+                setRouteInfo(null);
                 return;
             }
 
@@ -292,7 +297,7 @@ const CampusNavigator: React.FC = () => {
             };
 
             setdirs(safeResult);
-            setRouteInfo(bestStats); 
+            setRouteInfo(bestStats);
         };
 
         getdirs();
@@ -313,12 +318,12 @@ const CampusNavigator: React.FC = () => {
     const mapCenter: google.maps.LatLngLiteral =
         currloc ||
         (incidents.length > 0 &&
-        incidents[0].lat != null &&
-        incidents[0].lng != null
+            incidents[0].lat != null &&
+            incidents[0].lng != null
             ? {
-                  lat: incidents[0].lat as number,
-                  lng: incidents[0].lng as number,
-              }
+                lat: incidents[0].lat as number,
+                lng: incidents[0].lng as number,
+            }
             : { lat: 43.6577, lng: -79.3788 });
 
     return (
@@ -369,16 +374,16 @@ const CampusNavigator: React.FC = () => {
                             <div className="incident-menu">
                                 <button
                                     onClick={() =>
-                                        (window.location.href =
-                                            "/report-student.html")
+                                    (window.location.href =
+                                        "/report-student.html")
                                     }
                                 >
                                     Report Incident (Student)
                                 </button>
                                 <button
                                     onClick={() =>
-                                        (window.location.href =
-                                            "/faculty-login.html")
+                                    (window.location.href =
+                                        "/faculty-login.html")
                                     }
                                 >
                                     Send Alert (Faculty)
