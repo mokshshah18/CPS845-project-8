@@ -345,7 +345,6 @@ const CampusNavigator: React.FC = () => {
                         gap: "10px",
                     }}
                 >
-                    {/* NEW BUTTONS ADDED HERE */}
                     <button
                         className="top-btn"
                         onClick={() =>
