@@ -415,7 +415,7 @@ const CampusNavigator: React.FC = () => {
                 </div>
             </div>
 
-            <div className="controls"> 
+            <div className="controls">
                 <div className="gps-buttons">
                     <button className="gps" onClick={gpshandle}>
                         Use my Current Location
