@@ -346,6 +346,27 @@ const CampusNavigator: React.FC = () => {
                     }}
                 >
                     <button
+                        className="top-btn"
+                        onClick={() =>
+                            window.open("https://www.torontomu.ca/maps/", "_blank")
+                        }
+                    >
+                        Campus
+                    </button>
+
+                    <button
+                        className="top-btn"
+                        onClick={() =>
+                            window.open(
+                                "https://docs.google.com/document/d/1VhYMiE7ArwvtIqxLMAjNsqH8Y_maiJhwtpNFHs5WgIs/edit?usp=sharing",
+                                "_blank"
+                            )
+                        }
+                    >
+                        QR Codes
+                    </button>
+
+                    <button
                         onClick={() => setShowDebug(true)}
                         className="debug-btn"
                         title="Open User DB Debug Panel"
