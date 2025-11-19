@@ -10,7 +10,7 @@ Prerequisites
 - ODBC Driver 17 for SQL Server
 - (Optional but recommended) Virtual environment
 
-Install & Run Backend
+Install & Run Backend:
 ```
 cd backend
 python -m venv venv
