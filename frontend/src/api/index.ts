@@ -174,3 +174,21 @@ export async function getIncidents(): Promise<Incident[]> {
   return res.data;
 }
 
+// ============ Google Calendar ============
+
+export interface UpcomingEvent {
+  name: string;
+  start_time: string;
+  location: string;
+}
+
+export async function getUpcomingEvent(userId: number): Promise<UpcomingEvent | null> {
+  const res = await API.get(`/calendar/upcoming?user_id=${userId}`);
+  // API returns null if no events, or the event object
+  return res.data || null;
+}
+
+export async function initiateCalendarAuth(userId: number): Promise<void> {
+  // This redirects the browser, so we just navigate to the URL
+  window.location.href = `http://127.0.0.1:5000/api/calendar/auth?user_id=${userId}`;
+}
