@@ -4,3 +4,7 @@ Flask-SQLAlchemy
 Flask-Migrate
 pyodbc
 SQLAlchemy
+google-auth
+google-api-python-client
+google-auth-oauthlib
+python-dotenv

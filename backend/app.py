@@ -12,6 +12,7 @@ from routes.report_incidents import report_incidents_bp
 from flask import request, jsonify
 from models import FacultyUser
 from routes.alerts import alerts_bp
+from routes.calendar import calendar_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -29,6 +30,7 @@ app.register_blueprint(saved_items_bp, url_prefix="/api/saved-items")
 app.register_blueprint(user_db_bp, url_prefix="/api/user")
 app.register_blueprint(report_incidents_bp)
 app.register_blueprint(alerts_bp)
+app.register_blueprint(calendar_bp, url_prefix="/api/calendar")
 
 @app.route("/")
 def home():

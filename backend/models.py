@@ -129,6 +129,8 @@ class UserPreferences(db.Model):
     route_preference = db.Column(db.String(50), default="shortest")  # shortest, fastest, accessible
     calendar_sync_enabled = db.Column(db.Boolean, default=False)
     offline_mode_enabled = db.Column(db.Boolean, default=False)
+    google_calendar_token = db.Column(db.Text, nullable=True)  # Store OAuth tokens as JSON string
+    google_calendar_email = db.Column(db.String(255), nullable=True)  # Store connected email
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     

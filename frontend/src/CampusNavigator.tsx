@@ -8,7 +8,9 @@ import {
 import { BrowserMultiFormatReader } from "@zxing/browser";
 import UserDbDebug from "./components/UserDbDebug";
 import "./CampusNavigator.css";
-import { Incident, getIncidents } from "./api";
+import { Incident, getIncidents, getUpcomingEvent, initiateCalendarAuth, UpcomingEvent } from "./api";
+import CalendarEventPopup from "./components/CalendarEventPopup";
+
 
 // Score how safe a route is based on distance to incidents
 function computeRouteIncidentScore(
@@ -86,6 +88,12 @@ const CampusNavigator: React.FC = () => {
         incidentsNearRoute: number;
         travelTimeMinutes: number;
     } | null>(null);
+
+    // === CALENDAR EVENT POPUP STATE ===
+    const [upcomingEvent, setUpcomingEvent] = useState<UpcomingEvent | null>(null);
+    const [showEventPopup, setShowEventPopup] = useState(false);
+    const [shownEventId, setShownEventId] = useState<string | null>(null); // Track which event we've shown
+    const [userId] = useState(1); // Hardcoded for now
 
     // === HEATMAP STATE ===
     const [heatmapVisible, setHeatmapVisible] = useState(false);
@@ -231,6 +239,85 @@ const CampusNavigator: React.FC = () => {
         loadIncidents();
     }, []);
 
+    // Handle OAuth callback URL params
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const connected = params.get("calendar_connected");
+        const error = params.get("calendar_error");
+        
+        if (connected === "true") {
+            alert("Calendar connected successfully!");
+            // Clean up URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else if (error) {
+            const errorMsg = error === "invalid_domain" 
+                ? "Please use a Gmail or TMU account"
+                : error === "access_denied"
+                ? "Calendar access was denied"
+                : "Failed to connect calendar";
+            alert(`Calendar connection error: ${errorMsg}`);
+            // Clean up URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }, []);
+    
+    
+    // Poll for upcoming calendar events every 2 minutes
+    useEffect(() => {
+        const checkUpcomingEvent = async () => {
+            try {
+                const event = await getUpcomingEvent(userId);
+                if (event && !showEventPopup) {
+                    // Create unique ID for this event (name + start_time)
+                    const eventId = `${event.name}_${event.start_time}`;
+                    
+                    // Only show popup if we haven't shown this event before
+                    if (eventId !== shownEventId) {
+                        setUpcomingEvent(event);
+                        setShowEventPopup(true);
+                        setShownEventId(eventId); // Mark this event as shown
+                    }
+                } else if (!event) {
+                    // No event, clear everything
+                    setShowEventPopup(false);
+                    setUpcomingEvent(null);
+                    setShownEventId(null); // Reset so we can show events again
+                }
+            } catch (err) {
+                // Silently fail - user might not have calendar connected
+                console.error("Failed to check upcoming event", err);
+            }
+        };
+        
+        // Check immediately on mount
+        checkUpcomingEvent();
+        
+        // Then check every 2 minutes
+        const interval = setInterval(checkUpcomingEvent, 120000); // 120000ms = 2 minutes
+        
+        return () => clearInterval(interval);
+    }, [userId, showEventPopup, shownEventId]);
+    
+    
+ 
+    // Handle setting destination from calendar event
+    const handleSetDestination = () => {
+        if (upcomingEvent) {
+            // Use location if available, otherwise use event name
+            const destinationText = upcomingEvent.location || upcomingEvent.name;
+            setdest(destinationText);
+            setShowEventPopup(false);
+            // Keep the event and shownEventId so it doesn't pop up again
+            // The event will clear when it's no longer in the 30-minute window
+        }
+    };
+
+    // Handle calendar sync button
+    const handleSyncCalendar = () => {
+        initiateCalendarAuth(userId);
+    };
+    
+
     // Compute directions:
     // - if NO incidents then normal shortest route
     // - if incidents exist then choose safest alternative route
@@ -332,6 +419,17 @@ const CampusNavigator: React.FC = () => {
                 <UserDbDebug onClose={() => setShowDebug(false)} />
             )}
 
+            {showEventPopup && upcomingEvent && (
+                <CalendarEventPopup
+                    event={upcomingEvent}
+                    onSetDestination={handleSetDestination}
+                    onClose={() => {
+                        setShowEventPopup(false);
+                        // Don't clear the event or shownEventId - we want to remember we've shown it
+                    }}
+                />
+            )}
+
             <div className="top-bar">
                 <div className="left-controls">
                     <h1>Campus Navigator</h1>
@@ -372,6 +470,13 @@ const CampusNavigator: React.FC = () => {
                         title="Open User DB Debug Panel"
                     >
                         Debug DB
+                    </button>
+                    <button
+                        onClick={handleSyncCalendar}
+                        className="top-btn"
+                        title="Sync Google Calendar"
+                    >
+                        Sync to Calendar
                     </button>
 
                     <button
